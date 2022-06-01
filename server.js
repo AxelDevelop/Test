@@ -19,4 +19,8 @@ server.listen(PORT, () => {
 
 io.on("connection", (socket) => {
     console.log("connection on ", socket.io);
+
+    socket.on("ping", (data) => {
+        console.log(data, ": from ping event");
+    })
 })
