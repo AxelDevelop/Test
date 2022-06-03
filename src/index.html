@@ -4,11 +4,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <title>Socket Test</title>
+
 </head>
 <body>
 
-    <h1>Chat App</h1>
+    <div class="backdrop">
+
+    </div>
+    <!-- <form class="modal">
+
+        <h1 id="title">Welcome</h1>
+        <br>
+        <p id="content">Enter Your User Name</p>
+        <br>
+
+        <input placeholder="Enter User Name" type="text">
+        <br>
+        <button>Submit</button>
+    </form> -->
+    <div class="container">
+        <div class="chatbox">
+            <ul id="messageList"></ul>
+            <form class="Input">
+                <input id="inputText" type="text" placeholder="Type your message ...">
+                <button>Send</button>
+            </form>
+        </div>
+        <br>
+        <div class="activeusers">
+            <h2>Active Users</h2>
+            <ul id="users">
+
+            </ul>
+        </div>
+    </div>
 
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js" integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k" crossorigin="anonymous"></script>
     <script type="module" src="./index.js"></script>
