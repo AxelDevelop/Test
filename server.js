@@ -1,4 +1,4 @@
-const express = require('express')
+const express = require('express');
 const Socket = require('socket.io');
 
 const app = express();
@@ -12,17 +12,25 @@ const io = Socket(server, {
 })
 
 let PORT = 3000;
+let users = [];
 
 server.listen(PORT, () => {
-    console.log("Listening in Port: ", PORT);
+    console.log("Listening in Port:", PORT);
 })
 
 io.on("connection", (socket) => {
-    console.log("connection on ", socket.io);
+    console.log("connection on ", socket.id);
+
+    socket.on('addUsers', (userName) => {
+        socket.user = userName;
+        users.push(userName);
+        socket.emit('users', users);
+    })
 
     socket.on("message", (data) => {
-        io.socket.emit("message_client", {
+        io.emit("message_client", {
             data, 
+            user: socket.user
         })
     })
 

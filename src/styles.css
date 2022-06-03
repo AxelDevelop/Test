@@ -89,7 +89,7 @@ form.Input button{
 }
 
 
-/* .backdrop{
+.backdrop{
     background: rgba(0,0,0,.5);
     position: fixed;
     width: 100%;
@@ -140,4 +140,4 @@ form.Input button{
     width: 100%;
     
 
-} */
+}
