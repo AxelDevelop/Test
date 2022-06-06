@@ -5,9 +5,9 @@ const messageform = document.querySelector(".chatbox form")
 const messageList = document.querySelector("#messagelist")
 const userList = document.querySelector("#users")
 const chatboxInput = document.querySelector("#inputtext")
-const userAddForm = document.querySelector('.modal'), 
-      backdrop = document.querySelector('.backdrop'),
-      userAddImput = documen.querySelector('.modal input')
+const userAddForm = document.querySelector('.modal'),
+    backdrop = document.querySelector('.backdrop'),
+    userAddImput = document.querySelector('.modal input')
 
 let messages = [];
 let users = [];
@@ -47,32 +47,33 @@ function messageSubmitHandler(e) {
 function updateMessages() {
     messageList.innerHTML = "";
 
-    for(let i = 0; i <= messages.length; i++) {
+    for (let i = 0; i <= messages.length; i++) {
         messageList.innerHTML += `<li>
             <p>${messages[i].data}</p>
         </li>`
-    }    
+    }
 }
 
-function userAddHandler(e){
+function userAddHandler(e) {
     e.preventDefault();
 
     let userName = userAddImput.value;
 
-    if(!userName){
+    if (!userName) {
         alert('You Must add an user name');
     }
 
-    socket.emit("addUser", username => {
-        userAddForm.classList.add('disapear');
-        backdrop.classList.add('disapear');
-    })
+    socket.emit("addUser", userName);
+
+    userAddForm.classList.add('dissapear');
+    backdrop.classList.add('dissapear');
+
 }
 
 function updateUser() {
     userList.textContent = "";
 
-    for(let i of users.length){
+    for (let i of users.length) {
         let node = document.createElement("li");
         let textNode = document.createElement(users[i]);
         node.appendChild(textNode);

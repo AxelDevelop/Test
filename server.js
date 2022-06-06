@@ -12,7 +12,6 @@ const io = Socket(server, {
 })
 
 let PORT = 3000;
-let users = [];
 
 server.listen(PORT, () => {
     console.log("Listening in Port:", PORT);
@@ -24,7 +23,7 @@ io.on("connection", (socket) => {
     socket.on('addUsers', (userName) => {
         socket.user = userName;
         users.push(userName);
-        socket.emit('users', users);
+        io.sockets.emit('users', users);
     })
 
     socket.on("message", (data) => {
