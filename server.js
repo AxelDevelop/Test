@@ -12,15 +12,16 @@ const io = Socket(server, {
 })
 
 let PORT = 3000;
+let users = [];
 
 server.listen(PORT, () => {
     console.log("Listening in Port:", PORT);
 })
 
 io.on("connection", (socket) => {
-    console.log("connection on ", socket.id);
+    console.log("connection on", socket.id);
 
-    socket.on('addUsers', (userName) => {
+    socket.on('addUser', (userName) => {
         socket.user = userName;
         users.push(userName);
         io.sockets.emit('users', users);
@@ -31,6 +32,16 @@ io.on("connection", (socket) => {
             data, 
             user: socket.user
         })
+    })
+
+    socket.on('disconnect', () => {
+        console.log("We are disconnecting", socket.user);
+        
+        if(socket.user){
+            users.splice(users.indexOf(socket.user), 1);            
+            io.sockets.emit("users", users);
+            console.log('remaining users:', users);
+        }
     })
 
 }) 
