@@ -1,8 +1,12 @@
 const express = require('express');
 const Socket = require('socket.io');
+const mongoose = require('mongoose');
+const mongoDB = 'mongodb+srv://Admin:1234@cluster0.fukdn.mongodb.net/?retryWrites=true&w=majority'
 
 const app = express();
 const server = require('http').createServer(app);
+
+connectDB();
 
 const io = Socket(server, {
     cors: {
@@ -29,19 +33,28 @@ io.on("connection", (socket) => {
 
     socket.on("message", (data) => {
         io.emit("message_client", {
-            data, 
+            data,
             user: socket.user
         })
     })
 
     socket.on('disconnect', () => {
         console.log("We are disconnecting", socket.user);
-        
-        if(socket.user){
-            users.splice(users.indexOf(socket.user), 1);            
+
+        if (socket.user) {
+            users.splice(users.indexOf(socket.user), 1);
             io.sockets.emit("users", users);
             console.log('remaining users:', users);
         }
     })
 
-}) 
+})
+
+async function connectDB() {
+    try {
+        await mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true})
+        console.log('Succesfull Database Connection');
+    } catch (error) {
+        console.log(error);
+    }
+}

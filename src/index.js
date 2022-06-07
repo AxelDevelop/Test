@@ -6,7 +6,8 @@ const userList = document.querySelector("#users")
 const chatboxInput = document.querySelector("#inputtext")
 const userAddForm = document.querySelector('.modal'),
     backdrop = document.querySelector('.backdrop'),
-    userAddImput = document.querySelector('.modal input')
+    userAddImput = document.querySelector('.modal input');
+
 
 let messages = [];
 let users = [];
