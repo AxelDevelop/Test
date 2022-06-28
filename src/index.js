@@ -1,6 +1,5 @@
 const socket = io('http://localhost:3000');
 
-
 const messageform = document.querySelector(".chatbox form")
 const messageList = document.querySelector("#messagelist")
 const userList = document.querySelector("#users")
@@ -8,6 +7,10 @@ const chatboxInput = document.querySelector("#inputtext")
 const userAddForm = document.querySelector('.modal'),
     backdrop = document.querySelector('.backdrop'),
     userAddImput = document.querySelector('.modal input');
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2db03d9c7eb86e598b9a47e85667750d08b3fd8c
 
 let messages = [];
 let users = [];
@@ -17,12 +20,11 @@ let users = [];
 socket.on("message_client", (message) => {
     messages.push(message);
     updateMessages();
-    console.log(messages);
 })
 
 socket.on("users", (_users) => {
     users = _users;
-    updateUsers();
+    updateUser();
 })
 
 // Event Listeners
@@ -30,6 +32,8 @@ socket.on("users", (_users) => {
 messageform.addEventListener("submit", messageSubmitHandler);
 
 userAddForm.addEventListener("submit", userAddHandler);
+
+// Handlres
 
 function messageSubmitHandler(e) {
     e.preventDefault();
@@ -47,16 +51,16 @@ function messageSubmitHandler(e) {
 function updateMessages() {
     messageList.innerHTML = "";
 
-    for (let i = 0; i <= messages.length; i++) {
+    messages.forEach(data => {
         messageList.innerHTML += `<li>
-            <p>${messages[i].data}</p>
-        </li>`
-    }
+        <p>${data.user}</p>
+        <p>${data.data}</p>
+    </li>`
+    })
 }
 
 function userAddHandler(e) {
     e.preventDefault();
-
     let userName = userAddImput.value;
 
     if (!userName) {
@@ -65,18 +69,18 @@ function userAddHandler(e) {
 
     socket.emit("addUser", userName);
 
-    userAddForm.classList.add('dissapear');
-    backdrop.classList.add('dissapear');
+    userAddForm.classList.add('disappear');
+    backdrop.classList.add('disappear');
 
 }
 
 function updateUser() {
     userList.textContent = "";
 
-    for (let i of users.length) {
-        let node = document.createElement("li");
-        let textNode = document.createElement(users[i]);
+    users.forEach(user => {
+        let node = document.createElement("LI");
+        let textNode = document.createTextNode(user);
         node.appendChild(textNode);
         userList.appendChild(node);
-    }
+    })
 }
