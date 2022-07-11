@@ -1,12 +1,9 @@
 const express = require('express');
 const Socket = require('socket.io');
-const mongoose = require('mongoose');
-const mongoDB = 'mongodb+srv://Admin:1234@cluster0.fukdn.mongodb.net/?retryWrites=true&w=majority'
-
+const configDB = require('./configDB');
+const Msg = require('../models/messages');
 const app = express();
 const server = require('http').createServer(app);
-
-connectDB();
 
 const io = Socket(server, {
     cors: {
@@ -15,6 +12,9 @@ const io = Socket(server, {
     }
 })
 
+configDB.connectDB;
+
+
 let PORT = 3000;
 let users = [];
 
@@ -22,7 +22,13 @@ server.listen(PORT, () => {
     console.log("Listening in Port:", PORT);
 })
 
+// Controllers
+
 io.on("connection", (socket) => {
+    Msg.find().then(result => {
+        socket.emit('msgsUpdate', result)
+
+    })
     console.log("connection on", socket.id);
 
     socket.on('addUser', (userName) => {
@@ -32,9 +38,15 @@ io.on("connection", (socket) => {
     })
 
     socket.on("message", (data) => {
+
         io.emit("message_client", {
             data,
             user: socket.user
+        })
+        const message = new Msg({ data, user: socket.user });
+        message.save().then(() => {
+            io.emit('message', data)
+            console.log('Send');
         })
     })
 
@@ -48,13 +60,13 @@ io.on("connection", (socket) => {
         }
     })
 
-})
+    socket.on('deleteMessages', (payload) => {
+        io.emit("message_delete", payload)
 
-async function connectDB() {
-    try {
-        await mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true})
-        console.log('Succesfull Database Connection');
-    } catch (error) {
-        console.log(error);
-    }
-}
+        Msg.deleteOne({user: payload.user}, (err) => {
+            if(err)return handleError(err);
+            console.log('Delete', payload.user);
+        })
+    })
+
+})

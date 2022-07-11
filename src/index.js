@@ -1,3 +1,4 @@
+
 const socket = io('http://localhost:3000');
 
 const messageform = document.querySelector(".chatbox form")
@@ -7,10 +8,9 @@ const chatboxInput = document.querySelector("#inputtext")
 const userAddForm = document.querySelector('.modal'),
     backdrop = document.querySelector('.backdrop'),
     userAddImput = document.querySelector('.modal input');
-<<<<<<< HEAD
-=======
-
->>>>>>> 2db03d9c7eb86e598b9a47e85667750d08b3fd8c
+const formDelete = document.querySelector('#delete');
+const userDelete = document.querySelector('#username');
+const desciptionDelete = document.querySelector('#description');
 
 let messages = [];
 let users = [];
@@ -18,7 +18,13 @@ let users = [];
 // Socket Listeners
 
 socket.on("message_client", (message) => {
+    console.log(message);
     messages.push(message);
+    updateMessages();
+})
+
+socket.on("message_delete", (payload) => {
+    console.log(payload);
     updateMessages();
 })
 
@@ -27,11 +33,25 @@ socket.on("users", (_users) => {
     updateUser();
 })
 
+socket.on('msgsUpdate', (data) => {
+    if (data.length) {
+        data.forEach(msg => {
+            let users = msg.user;
+            let msgs = msg.data
+            getMessages(users, msgs);
+        })
+    }
+})
+
 // Event Listeners
 
 messageform.addEventListener("submit", messageSubmitHandler);
 
 userAddForm.addEventListener("submit", userAddHandler);
+
+formDelete.addEventListener('submit', deleteCollection);
+
+
 
 // Handlres
 
@@ -48,15 +68,24 @@ function messageSubmitHandler(e) {
     chatboxInput.value = "";
 }
 
-function updateMessages() {
-    messageList.innerHTML = "";
+function getMessages(user, message) {
+    const html = `<p class="font-bold capitalize ">${user}</p>
+         <p class="capitalize ">${message}</p>
+     </li>`
+    messageList.innerHTML += html;
 
-    messages.forEach(data => {
-        messageList.innerHTML += `<li>
-        <p>${data.user}</p>
-        <p>${data.data}</p>
-    </li>`
+}
+
+function updateMessages() {
+    // messageList.innerHTML = ""
+
+    messages.forEach(msg => {
+        messageList.innerHTML +=
+        `<p class="font-bold capitalize ">${msg.user}</p>
+         <p class="capitalize ">${msg.data}</p>
+     </li>`
     })
+
 }
 
 function userAddHandler(e) {
@@ -65,6 +94,7 @@ function userAddHandler(e) {
 
     if (!userName) {
         alert('You Must add an user name');
+        userName = "!UNR!"
     }
 
     socket.emit("addUser", userName);
@@ -79,8 +109,27 @@ function updateUser() {
 
     users.forEach(user => {
         let node = document.createElement("LI");
+        node.classList.add('text-semibold', 'p-1', 'capitalize');
         let textNode = document.createTextNode(user);
         node.appendChild(textNode);
         userList.appendChild(node);
     })
+}
+
+function deleteCollection (e) {
+    e.preventDefault();
+    let userData = {
+        user: userDelete.value,
+        description: desciptionDelete.value
+    }
+
+    if(!userData.user && !userData.description){
+        console.log('You need an user and description for delete one message');
+    }else{
+        socket.emit("deleteMessages", userData);
+        console.log(userData);
+    }
+    userData.user = "";
+    userData.description = "";
+    
 }
