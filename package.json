@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-ejs-layouts": "^2.5.1",
@@ -10,7 +11,8 @@
   },
   "scripts": {
     "tailwind:build": "npx tailwindcss -i ./src/styles.css -o ./src/styles/output.css --watch",
-    "start:dev": "nodemon ./config/server"
+    "start:dev": "nodemon ./server",
+    "start:render": "ejs ./src/template.ejs -f ./data/data.json -o ./src/index.html"
   },
   "name": "socket-test",
   "version": "1.0.0",

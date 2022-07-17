@@ -15,12 +15,17 @@ const desciptionDelete = document.querySelector('#description');
 let messages = [];
 let users = [];
 
+// Midlewares
+
+
+
 // Socket Listeners
 
 socket.on("message_client", (message) => {
     console.log(message);
     messages.push(message);
     updateMessages();
+
 })
 
 socket.on("message_delete", (payload) => {
@@ -48,9 +53,6 @@ socket.on('msgsUpdate', (data) => {
 messageform.addEventListener("submit", messageSubmitHandler);
 
 userAddForm.addEventListener("submit", userAddHandler);
-
-formDelete.addEventListener('submit', deleteCollection);
-
 
 
 // Handlres
@@ -81,7 +83,7 @@ function updateMessages() {
 
     messages.forEach(msg => {
         messageList.innerHTML +=
-        `<p class="font-bold capitalize ">${msg.user}</p>
+            `<p class="font-bold capitalize ">${msg.user}</p>
          <p class="capitalize ">${msg.data}</p>
      </li>`
     })
@@ -102,34 +104,44 @@ function userAddHandler(e) {
     userAddForm.classList.add('disappear');
     backdrop.classList.add('disappear');
 
+
 }
 
 function updateUser() {
     userList.textContent = "";
 
-    users.forEach(user => {
+    users.forEach((user) => {
         let node = document.createElement("LI");
         node.classList.add('text-semibold', 'p-1', 'capitalize');
         let textNode = document.createTextNode(user);
         node.appendChild(textNode);
         userList.appendChild(node);
     })
+
+    console.log(users[0].name);
+
 }
 
-function deleteCollection (e) {
+function deleteCollection(e) {
     e.preventDefault();
     let userData = {
         user: userDelete.value,
         description: desciptionDelete.value
     }
 
-    if(!userData.user && !userData.description){
+    if (!userData.user && !userData.description) {
         console.log('You need an user and description for delete one message');
-    }else{
+    } else {
         socket.emit("deleteMessages", userData);
-        console.log(userData);
     }
-    userData.user = "";
-    userData.description = "";
-    
+
 }
+
+// const auth = (e) => {
+//     e.preventDefault();
+//     return io({
+//         auth: {
+//             token: 'abcd'
+//         }
+//     })
+// }
